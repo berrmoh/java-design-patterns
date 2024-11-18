@@ -28,19 +28,53 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This class represents an endpoint resource that
- * we are going to interchange with a Rest API server.
+ * This class leverages Lombok and Jackson annotations to reduce boilerplate code, improve maintainability,
+ * and control serialization behavior. 
+ * 
+ * - @Data: Generates standard methods like getters, setters, toString, equals, and hashCode.
+ * - @AllArgsConstructor: Creates a constructor with parameters for all fields.
+ * - @NoArgsConstructor(force = true): Generates a no-argument constructor, initializing final fields with default values.
+ * - @Builder: Implements the builder pattern for flexible and readable object creation.
+ * - @JsonInclude(JsonInclude.Include.NON_NULL): Ensures null fields are excluded during JSON serialization, reducing data size and improving clarity.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Album {
 
+    /**
+   * Unique identifier for the album.
+   */
+  @NotNull(message = "ID cannot be null")
   private Integer id;
+
+  /**
+   * Title of the album.
+   */
+  @NotNull(message = "Title cannot be null")
+  @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
   private String title;
+
+  /**
+   * Identifier for the user who owns or created the album.
+   */
+  @NotNull(message = "User ID cannot be null")
   private Integer userId;
+
+  /**
+   * Prints album details for logging purposes.
+   */
+  public void printAlbumDetails() {
+    logger.info("Album Details: ID = {}, Title = {}, User ID = {}", this.id, this.title, this.userId);
+  }
 
 }
